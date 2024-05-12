@@ -1,4 +1,4 @@
-# Kandziak kickstart.nvim Personalized Environment Setup 
+# Kandziak kickstart.nvim Personalized Environment Setup
 
 ## Introduction
 

@@ -5,10 +5,22 @@ return {
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local lint = require 'lint'
+
+      local function eslint_available()
+        local handle = io.popen 'command -v eslint'
+        if handle then
+          local result = handle:read '*a'
+          handle:close()
+          return result ~= ''
+        else
+          return false
+        end
+      end
+
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
-        javascript = { 'eslint' },
-        typescript = { 'eslint' },
+        javascript = eslint_available() and { 'eslint' } or {},
+        typescript = eslint_available() and { 'eslint' } or {},
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,

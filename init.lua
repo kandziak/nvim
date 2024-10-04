@@ -91,7 +91,14 @@ vim.keymap.set('n', '<leader>S', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><
 
 vim.keymap.set('n', '<leader>vpp', '<cmd>e ~/.config/nvim/init.lua<CR>')
 
-vim.keymap.set('n', '<leader>ee', 'oif err != nil {<CR>}<Esc>Oreturn err<Esc>', { desc = 'err handler in go' })
+vim.keymap.set('n', '<leader>eeg', 'oif err != nil {<CR>}<Esc>Oreturn err<Esc>', { desc = 'err handler in go' })
+
+vim.keymap.set(
+  'n',
+  '<leader>eet',
+  'o(async (): Promise<void> => {<CR>  <CR>})()<CR>.catch((err) => {<CR>  if (err instanceof Error) {<CR>    console.error(err.message);<CR>  } else {<CR>    console.error(err);<CR>  }<CR>  process.exit(1);<CR>});<Esc>O',
+  { desc = 'async error handler in JS/TS' }
+)
 
 -- Undotree
 vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle, { desc = 'Open undotree' })

@@ -1,5 +1,4 @@
 return {
-
   { -- Linting
     'mfussenegger/nvim-lint',
     event = { 'BufReadPre', 'BufNewFile' },
@@ -21,6 +20,8 @@ return {
         markdown = { 'markdownlint' },
         javascript = eslint_available() and { 'eslint' } or {},
         typescript = eslint_available() and { 'eslint' } or {},
+        kotlin = { 'ktlint' },
+        python = { 'mypy', 'ruff' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,

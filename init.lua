@@ -387,6 +387,27 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'jose-elias-alvarez/null-ls.nvim',
+    config = function()
+      local null_ls = require 'null-ls'
+
+      null_ls.setup {
+        sources = {
+          null_ls.builtins.formatting.black, -- Dodaj Black jako formater
+        },
+      }
+
+      -- Automatyczne formatowanie po zapisaniu pliku Python
+      vim.api.nvim_create_autocmd('BufWritePost', {
+        pattern = { '*.py' },
+        callback = function()
+          vim.lsp.buf.format { async = true } -- Formatowanie przy zapisie
+        end,
+      })
+    end,
+  },
+
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -543,6 +564,8 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      local lspconfig = require 'lspconfig'
+
       local servers = {
         -- clangd = {},
         gopls = {
@@ -554,7 +577,13 @@ require('lazy').setup({
             },
           },
         },
-        -- pyright = {},
+        kotlin_language_server = {},
+        pyright = {
+          root_dir = function(fname)
+            local root_files = { 'pyproject.toml', 'setup.py', '.git' }
+            return lspconfig.util.root_pattern(unpack(root_files))(fname) or vim.loop.cwd()
+          end,
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -611,6 +640,10 @@ require('lazy').setup({
         'ts_ls',
         'eslint-lsp',
         'prettier', -- Used to format Lua code
+        'ktlint',
+        'ruff',
+        'mypy',
+        'black',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -822,7 +855,23 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'javascript', 'typescript', 'jsdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'vim',
+        'vimdoc',
+        'javascript',
+        'typescript',
+        'jsdoc',
+        'kotlin',
+        'python',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
